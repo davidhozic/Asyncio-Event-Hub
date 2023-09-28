@@ -1,0 +1,37 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel",
+]
+
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "async-event-loop"
+authors = [
+    {name = "David Hozic"}
+]
+description = "A library that provides users the ability to create event (loop) driven systems within the asyncio framework."
+
+readme = "README.rst"
+requires-python = ">=3.8"
+keywords = ["event", "asyncio", "event driven", "event loop"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dynamic = ["optional-dependencies", "version"]
+
+[tool.setuptools]
+include-package-data = true
+packages = ["async_event_loop"]
+
+
+[tool.setuptools.dynamic]
+version = {attr = "async_event_loop.VERSION"}
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = {file = "requirements/dev.txt"}

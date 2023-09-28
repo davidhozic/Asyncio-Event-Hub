@@ -12,7 +12,7 @@ Info
 ------------------------
 
 .. seealso:: 
-    `Releases <https://github.com/davidhozic/Tkinter-Async-Execute/releases>`_  
+    `Releases <https://github.com/davidhozic/async-event-loop/releases>`_  
 
 
 Glossary
@@ -33,21 +33,6 @@ Glossary
 ---------------------
 Releases
 ---------------------
-v1.2.0
-===========
-- Added ``show_exceptions`` parameter to :func:`~tk_async_execute.utils.async_execute()` and
-  :class:`~tk_async_execute.widget.ExecutingAsyncWindow`.
-- Added :py:attr:`~tk_async_execute.widget.ExecutingAsyncWindow.future`
-
-
-v1.1.0
-=================
-- Instead of showing a coroutine exception on screen when using
-  :func:`~tk_async_execute.utils.async_execute()`, raise the exception.
-
-v1.0.1
-=================
-- Fix event loop problems on Python before 3.10 due to semaphores (etc.) calling ``get_event_loop`` inside.
 
 
 v1.0.0

@@ -17,11 +17,11 @@ import os
 sys.path.insert(0, os.path.abspath('../../src/'))
 sys.path.insert(0, os.path.abspath('.'))
 
-from tk_async_execute import VERSION
+from async_event_loop import VERSION
 
 
 # -- Project information -----------------------------------------------------
-project = 'Tkinter-Async-Execute'
+project = 'Async-Event-Loop'
 copyright = '2023, David Hozic'
 author = 'David Hozic'
 version = VERSION

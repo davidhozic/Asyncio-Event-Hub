@@ -10,7 +10,7 @@ OUTPUT_PATH = "../reference"
 os.chdir(os.path.dirname(__file__))
 os.environ["DOCUMENTATION"] = "True"
 
-import tk_async_execute.doc as doc
+import async_event_loop.doc as doc
 
 CATEGORY_TEMPLATE = \
 """
@@ -33,7 +33,8 @@ AUTO_CLASS_TEMPLATE =\
 {object_name}
 ------------------------
 .. autoclass:: {object_path}
-    {members}
+    :members:
+    :inherited-members:
 """
 
 AUTO_ENUM_TEMPLATE =\
@@ -42,7 +43,8 @@ AUTO_ENUM_TEMPLATE =\
 {object_name}
 ------------------------
 .. autoenum:: {object_path}
-    {members}
+    :members:
+    :inherited-members:
 """
 
 MANUAL_FUNCTION_TEMPLATE = \
@@ -88,13 +90,9 @@ with open(os.path.join(OUTPUT_PATH, "index.rst"), "w", encoding="utf-8") as tocw
             for category, items in titles.items():
                 export_c_items = ""  # All classes string
                 export_f_items = ""  # All functions string
-                for item, manual, path, members in items:
+                for item, manual, path in items:
                     object_name = item.__name__
-                    object_path = f"{item.__module__}.{object_name}" if path is None else f"tk_async_execute.{path}.{object_name}"
-                    if members:
-                        members = ":members:\n    :inherited-members:"
-                    else:
-                        members = ""
+                    object_path = f"{item.__module__}.{object_name}" if path is None else f"async_event_loop.{path}.{object_name}"
 
                     if inspect.isfunction(item):
                         if manual:
@@ -135,9 +133,9 @@ with open(os.path.join(OUTPUT_PATH, "index.rst"), "w", encoding="utf-8") as tocw
                     elif inspect.isclass(item):
                         # Fill properties
                         if isinstance(item, EnumMeta):
-                            export_c_items += AUTO_ENUM_TEMPLATE.format(object_name=object_name, object_path=object_path, members=members) + "\n"
+                            export_c_items += AUTO_ENUM_TEMPLATE.format(object_name=object_name, object_path=object_path) + "\n"
                         else:
-                            export_c_items += AUTO_CLASS_TEMPLATE.format(object_name=object_name, object_path=object_path, members=members) + "\n"
+                            export_c_items += AUTO_CLASS_TEMPLATE.format(object_name=object_name, object_path=object_path) + "\n"
 
                 if export_f_items or export_c_items:
                     toc_entry = f"{category.lower().replace(' ', '_')}"

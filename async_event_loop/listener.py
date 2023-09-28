@@ -16,12 +16,10 @@ TEvent = Union[Enum, str, int]
 
 
 __all__ = (
-    "EventID",
     "EventController",
 )
 
 
-@doc_category("Event reference")
 class EventListener:
     def __init__(self, fnc: Callable, predicate: Callable[[T], bool] = None) -> None:
         self.fnc = fnc

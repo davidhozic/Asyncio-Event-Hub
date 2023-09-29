@@ -12,7 +12,7 @@ Info
 ------------------------
 
 .. seealso:: 
-    `Releases <https://github.com/davidhozic/async-event-loop/releases>`_  
+    `Releases <https://github.com/davidhozic/Asyncio-Event-Hub/releases>`_  
 
 
 Glossary

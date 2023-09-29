@@ -62,7 +62,7 @@ class EventController:
 
     @property
     def listeners(self) -> List[EventListener]:
-        "Returns a list of ~:class:`async_event_loop.controller.EventListener`."
+        "Returns a list of ~:class:`asyncio_event_hub.controller.EventListener`."
         return self._listeners[:]
 
     @asynccontextmanager

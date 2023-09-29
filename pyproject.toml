@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 
 [project]
-name = "async-event-loop"
+name = "asyncio-event-hub"
 authors = [
     {name = "David Hozic"}
 ]
@@ -27,11 +27,11 @@ dynamic = ["optional-dependencies", "version"]
 
 [tool.setuptools]
 include-package-data = true
-packages = ["async_event_loop"]
+packages = ["asyncio_event_hub"]
 
 
 [tool.setuptools.dynamic]
-version = {attr = "async_event_loop.VERSION"}
+version = {attr = "asyncio_event_hub.VERSION"}
 
 [tool.setuptools.dynamic.optional-dependencies]
 dev = {file = "requirements/dev.txt"}

@@ -10,7 +10,7 @@ OUTPUT_PATH = "../reference"
 os.chdir(os.path.dirname(__file__))
 os.environ["DOCUMENTATION"] = "True"
 
-import async_event_loop.doc as doc
+import asyncio_event_hub.doc as doc
 
 CATEGORY_TEMPLATE = \
 """
@@ -92,7 +92,7 @@ with open(os.path.join(OUTPUT_PATH, "index.rst"), "w", encoding="utf-8") as tocw
                 export_f_items = ""  # All functions string
                 for item, manual, path in items:
                     object_name = item.__name__
-                    object_path = f"{item.__module__}.{object_name}" if path is None else f"async_event_loop.{path}.{object_name}"
+                    object_path = f"{item.__module__}.{object_name}" if path is None else f"asyncio_event_hub.{path}.{object_name}"
 
                     if inspect.isfunction(item):
                         if manual:

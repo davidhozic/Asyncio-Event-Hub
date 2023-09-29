@@ -17,11 +17,11 @@ import os
 sys.path.insert(0, os.path.abspath('../../src/'))
 sys.path.insert(0, os.path.abspath('.'))
 
-from async_event_loop import VERSION
+from asyncio_event_hub import VERSION
 
 
 # -- Project information -----------------------------------------------------
-project = 'Async-Event-Loop'
+project = 'Asyncio Event Hub'
 copyright = '2023, David Hozic'
 author = 'David Hozic'
 version = VERSION

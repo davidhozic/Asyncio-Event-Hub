@@ -1,10 +1,10 @@
 ============================================
-Async-Event-Loop
+Asyncio Event Hub
 ============================================
 
-Async-Event-Loop is a library that provides users with a way to easily create
+Asyncio Event Hub is a library that provides users with a way to easily create
 event-driven applications within the asyncio framework. It provides one main class
-``async_event_loop.EventController``, which can be used to emit events and add listeners (functions) to events
+``asyncio_event_hub.EventController``, which can be used to emit events and add listeners (functions) to events
 that get called from the event loop in the same order they were added.
 
 
@@ -12,20 +12,20 @@ Installation
 ==============
 .. code-block:: bash
 
-    pip install async-event-loop
+    pip install asyncio-event-hub
 
 
 Example
 =============
 .. code-block:: python
 
-    import async_event_loop as ael
+    import asyncio_event_hub as aeh
     import asyncio
 
 
     # Create event controllers
-    main_controller = ael.EventController()
-    sub_controller = ael.EventController()
+    main_controller = aeh.EventController()
+    sub_controller = aeh.EventController()
 
     # Register sub_controller as a sub-controller of the main_controller
     main_controller.add_subcontroller(sub_controller)

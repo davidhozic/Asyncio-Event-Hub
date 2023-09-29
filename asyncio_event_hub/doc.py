@@ -12,7 +12,7 @@ __all__ = (
 
 DOCUMENTATION_MODE = bool(environ.get("DOCUMENTATION", False))
 if DOCUMENTATION_MODE:
-    cat_map: Dict[str, list] = {"Program": {}, "HTTP": {}}
+    cat_map: Dict[str, list] = {"Program": {}}
 
 
 def doc_category(

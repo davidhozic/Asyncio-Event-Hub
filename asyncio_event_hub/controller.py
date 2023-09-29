@@ -5,7 +5,7 @@ It also contains the event loop definitions.
 from contextlib import suppress, asynccontextmanager
 from enum import Enum
 from sys import _getframe
-from typing import Any, List, Dict, Callable, TypeVar, Coroutine, Union
+from typing import Any, List, Dict, Callable, TypeVar, Coroutine, Union, Optional
 
 
 from .doc import doc_category
@@ -158,7 +158,7 @@ class EventController:
 
         return asyncio.gather(self._loop_task, *(c.stop() for c in self._subcontrollers))
 
-    def add_listener(self, event: TEvent, fnc: Callable, predicate: Callable[[Any], bool] = None):
+    def add_listener(self, event: TEvent, fnc: Callable[[T], Any], predicate: Optional[Callable[[T], bool]] = None):
         """
         Registers the function ``fnc`` as an event listener for ``event``.
         

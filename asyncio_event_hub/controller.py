@@ -23,7 +23,20 @@ __all__ = (
 
 @doc_category("Event reference")
 class EventListener:
-    def __init__(self, fnc: Callable, predicate: Callable[[T], bool] = None) -> None:
+    """
+    .. versionadded:: 1.0
+
+    Represents a listener (handler) of an event.
+
+    Attributes
+    --------------
+    fnc: Callable[[T], Any]
+        The actual registered handler function.
+    predicate: Optional[Callable[[T], bool]]
+        Condition function that gets called before ``fnc`` and must return True, if the ``fnc``
+        is to be called.
+    """
+    def __init__(self, fnc: Callable[[T], Any], predicate: Optional[Callable[[T], bool]] = None) -> None:
         self.fnc = fnc
         self.predicate = predicate
 
@@ -40,6 +53,8 @@ class EventListener:
 @doc_category("Event reference")
 class EventController:
     """
+    .. versionadded:: 1.0
+
     Responsible for controlling the event loop, listening and emitting events.
     """
     def __init__(self) -> None:
@@ -52,22 +67,27 @@ class EventController:
 
     @property
     def running(self) -> bool:
-        "Returns bool indicating if the controller is running or not."
+        """
+        .. versionadded:: 1.0
+
+        Returns bool indicating if the controller is running or not.
+        """
         return self._running
 
     @property
     def subcontrollers(self) -> List["EventController"]:
-        "Returns a list of controller's sub-controllers."
-        return self._subcontrollers[:]
+        """
+        .. versionadded:: 1.0
 
-    @property
-    def listeners(self) -> List[EventListener]:
-        "Returns a list of ~:class:`asyncio_event_hub.controller.EventListener`."
-        return self._listeners[:]
+        Returns a list of controller's sub-controllers.
+        """
+        return self._subcontrollers[:]
 
     @asynccontextmanager
     async def critical(self):
         """
+        .. versionadded:: 1.0
+
         Method that returns an async context manager, that prevents any events from being processed
         while in the critical section.
 
@@ -88,6 +108,8 @@ class EventController:
 
     def start(self):
         """
+        .. versionadded:: 1.0
+
         Starts the event loop of this master controller and it's subcontrollers.
         """
         if not self._running:
@@ -103,6 +125,8 @@ class EventController:
 
     def add_subcontroller(self, controller: "EventController"):
         """
+        .. versionadded:: 1.0
+
         Adds a sub-controller, that also receives events emitted to the current controller.
         If this master controller is running and the ``controller`` being added is not, it is automatically
         started. If this master controller is not running, the ``controller`` being added is started,
@@ -120,8 +144,10 @@ class EventController:
 
     def remove_subcontroller(self, controller: "EventController"):
         """
+        .. versionadded:: 1.0
+
         Removes the sub-controller.
-        The controller is automatically stopped.
+        The sub-controller IS NOT stopped.
 
         Parameters
         -----------
@@ -131,19 +157,14 @@ class EventController:
         Raises
         ---------
         ValueError
-            The ``controller`` parameter is not a subcontroller of the current controller
-
-        Returns
-        ---------
-        asyncio.Future
-            An awaitable Future object, which can be used to wait
-            for the controller to stop.
+            The ``controller`` is not a subcontroller of the current controller
         """
         self._subcontrollers.remove(controller)
-        return controller.stop()
 
     def stop(self):
         """
+        .. versionadded:: 1.0
+
         Stops event loop asynchronously
 
         Returns
@@ -160,6 +181,8 @@ class EventController:
 
     def add_listener(self, event: TEvent, fnc: Callable[[T], Any], predicate: Optional[Callable[[T], bool]] = None):
         """
+        .. versionadded:: 1.0
+
         Registers the function ``fnc`` as an event listener for ``event``.
         
         Parameters
@@ -170,7 +193,7 @@ class EventController:
             The function listener to add.
         predicate: Optional[Callable[[Any], bool]]
             Optional function parameter that accepts the same parameters as ``fnc`` and must return
-            True, indicating the event ``fnc`` is to be called or not. If it returns False, the ``fnc`` does not
+            True, indicating if ``fnc`` is to be called or not. If it returns False, the ``fnc`` does not
             get called after event is emitted.
         """
         listeners = self._listeners[event] = self._listeners.get(event, [])
@@ -178,6 +201,8 @@ class EventController:
 
     def remove_listener(self, event: TEvent, fnc: Callable):
         """
+        .. versionadded:: 1.0
+
         Remove the function ``fnc`` from the list of listeners for ``event``.
 
         Parameters
@@ -199,7 +224,19 @@ class EventController:
 
     def listen(self, event: TEvent):
         """
+        .. versionadded:: 1.0
+
         Decorator used to register the function as an event listener.
+
+        Example:
+
+        .. code-block:: python
+
+            ctrl = EventController()
+
+            @ctrl.listen("my_event")
+            async def event_handler():
+                print("Received event")
 
         Parameters
         ---------------
@@ -214,9 +251,17 @@ class EventController:
 
     def emit(self, event: TEvent, *args, **kwargs) -> asyncio.Future:
         """
-        .. versionadded:: 3.0
+        .. versionadded:: 1.0
 
         Emits an ``event`` by calling all the registered listeners from the event loop.
+
+        Example:
+
+        .. code-block:: python
+
+            ctrl = EventController()
+            ... # Add listeners (handlers)
+            ctrl.emit("my_event")
 
         Parameters
         -----------
@@ -267,11 +312,17 @@ class EventController:
         return future
     
     def clear_queue(self):
-        "Clears all emitted events from queue (recreates the queue)."
+        """
+        .. versionadded:: 1.0
+
+        Clears all emitted events from queue (recreates the queue).
+        """
         self._event_queue = asyncio.Queue()
 
     async def event_loop(self):
         """
+        .. versionadded:: 1.0
+
         Event loop task.
         """
         queue = self._event_queue

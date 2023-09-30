@@ -13,3 +13,5 @@ to emit custom events and assign event listeners to these emitted events. After 
 
     control
     register
+    emit
+    subcontroller

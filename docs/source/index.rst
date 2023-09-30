@@ -4,7 +4,7 @@ Asyncio Event Hub (|version|)
 
 Asyncio Event Hub is a library that provides users with a way to easily create
 event-driven applications within the asyncio framework. It provides one main class
-:class:`asyncio_event_hub.EventController`, which can be used to emit and add listeners (functions) to events
+:class:`asyncio_event_hub.controller.EventController`, which can be used to emit and add listeners (functions) to events
 that get called from the event loop in the same order they were added.
 
 

@@ -34,4 +34,4 @@ packages = ["asyncio_event_hub"]
 version = {attr = "asyncio_event_hub.VERSION"}
 
 [tool.setuptools.dynamic.optional-dependencies]
-dev = {file = "requirements/dev.txt"}
+docs = {file = "requirements/docs.txt"}

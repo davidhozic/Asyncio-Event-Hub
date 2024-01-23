@@ -65,3 +65,42 @@ Optionally we can also ``await`` for the events to be fully processed.
 
 
         asyncio.run(main())  # Start asyncio framework
+
+
+Event priority
+====================
+Asyncio Event Hub allows to prioritize events. Events with higher priority
+always get emitted before the ones with lower priority.
+The :class:`asyncio_event_hub.controller.EventController.emit` method accepts a keyword argument
+``priority`` to control the priority level. It is an integer parameter,
+where a higher integer means higher priority. The default priority is 0.
+
+
+.. code-block:: python
+    :caption: Emitting event and waiting for it's processing to complete (``await``)
+    :emphasize-lines: 18
+
+    import asyncio
+    import asyncio_event_hub as aeh
+
+
+    def event_listener(a: int = 1):
+        print(f"Called listener, a={a}")
+
+
+    async def main():
+        ctrl = aeh.EventController()
+        # Add a listener to "my_event", which always gets called
+        # regardless of value a receives (no condition).
+        ctrl.add_listener("my_event", event_listener)
+        ctrl.start()  # Start the controller here.
+
+        while True:
+            await asyncio.sleep(5)
+            # Emit the event with a=10
+            ctrl.emit("my_event", a=10)
+            # Emit the event with a=20. This will be executed before a=10 one.
+            ctrl.emit("my_event", a=20, priority=1)
+
+    asyncio.run(main())  # Start asyncio framework
+

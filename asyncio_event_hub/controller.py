@@ -59,11 +59,13 @@ class EventController:
     """
     def __init__(self) -> None:
         self._listeners: Dict[TEvent, List[EventListener]] = {}
-        self._event_queue = asyncio.Queue()
+        self._current_waiting: int = None
         self._loop_task: asyncio.Task = None
         self._running = False
         self._subcontrollers: List[EventController] = []
         self._mutex = asyncio.Lock()  # Critical section lock
+        self._priority_queues = None
+        self.clear_queue()
 
     @property
     def running(self) -> bool:
@@ -174,8 +176,8 @@ class EventController:
             and also the tasks of all the subcontrollers.
         """
         if self._running:
+            self.emit("__dummy_event__")
             self._running = False
-            self._event_queue.put_nowait(("__dummy_event__", tuple(), {}, asyncio.Future()))
 
         return asyncio.gather(self._loop_task, *(c.stop() for c in self._subcontrollers))
 
@@ -249,7 +251,7 @@ class EventController:
 
         return _listen_decor
 
-    def emit(self, event: TEvent, *args, **kwargs) -> asyncio.Future:
+    def emit(self, event: TEvent, *args, priority: int = 0, **kwargs) -> asyncio.Future:
         """
         .. versionadded:: 1.0
 
@@ -269,6 +271,12 @@ class EventController:
             The event to emit.
         args
             Variadic positional arguments passed to event listeners.
+        priority: int
+            .. versionadded:: 1.1
+
+            The priority of event. Events with higher priority are
+            processed before the ones with lower priority. Defaults to 0.
+            This is a keyword only priority.
         kwargs
             Variadic keyword arguments passed to event listeners.
 
@@ -296,7 +304,17 @@ class EventController:
             )
             return future
 
-        self._event_queue.put_nowait((event, args, kwargs, future))
+        priority_queues = self._priority_queues
+        queue = priority_queues.get(priority)
+        if queue is None:
+            priority_queues[priority] = queue = asyncio.Queue()
+            self._priority_queues = {p: priority_queues[p] for p in sorted(priority_queues, reverse=True)}
+
+        cw = self._current_waiting
+        if cw is not None and cw < priority:
+            self.emit("__dummy_event__", priority=cw)
+
+        queue.put_nowait((event, args, kwargs, future))
 
         # Also emit and for sublisteners and create awaitable future that waits for all controllers
         # to emit the events and process.
@@ -317,7 +335,10 @@ class EventController:
 
         Clears all emitted events from queue (recreates the queue).
         """
-        self._event_queue = asyncio.Queue()
+        self._priority_queues: Dict[int, asyncio.Queue] = {
+            -1: asyncio.Queue()  # Dummy queue awaited when no other queues have anything to handle
+        }
+
 
     async def event_loop(self):
         """
@@ -325,14 +346,24 @@ class EventController:
 
         Event loop task.
         """
-        queue = self._event_queue
         listeners = self._listeners
 
         event_id: TEvent
         future: asyncio.Future
 
         while self._running:
-            event_id, args, kwargs, future = await queue.get()
+            for p, q in self._priority_queues.items():
+                if q.empty():
+                    continue
+
+                break
+            else:
+                p = -1
+                q = self._priority_queues[p]
+
+            self._current_waiting = p
+            event_id, args, kwargs, future = await q.get()
+            self._current_waiting = None
 
             async with self.critical():
                 for listener in listeners.get(event_id, [])[:]:
